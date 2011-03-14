@@ -24,18 +24,15 @@ Info
 - Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html 
 
 
-Build Setup
------------
+One time build setup
+--------------------
 
 $ cp local.properties.sample local.properties
 
-- Adjust Android SDK path settings in "local.properties"
+- Adjust SDK path settings in "local.properties"
 
-- Add your own Twitter consumer key and secret to 
-  "src/com/vodafone/twitter/client/AlwaysOnTwitter.java", replace:
-
-  CONSUMERKEY = "___";
-  CONSUMERSECRET = "____";
+- Hardcode your personal app key + secret in 
+  AlwaysOnTwitter.java: CONSUMERKEY + CONSUMERSECRET
 
 
 Building
