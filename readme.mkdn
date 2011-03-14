@@ -1,0 +1,51 @@
+
+AlwaysOnTwitter Android Service
+===============================
+
+Info
+----
+
+- Android service for the Twitter streaming API
+
+- Includes sample consumer making use of the service
+
+- Service receiving push messages from Twitter
+
+- Operates on 3G, 4G and WiFi
+
+- When the physical network changes, connectivity will be maintained
+
+- Minimal use of energy, made for 24 hour operation
+
+
+Build Setup
+-----------
+
+$ cp local.properties.sample local.properties
+
+- adjust SDK path settings in "local.properties"
+
+- add your own Twitter consuler key and secret to 
+  "src/com/vodafone/twitter/client/AlwaysOnTwitter.java"
+  see: CONSUMERKEY = "___";
+       CONSUMERSECRET = "____";
+
+
+Building
+--------
+
+$ rm -rf bin gen && ant debug
+
+
+Installation and remote execution
+---------------------------------
+
+$ adb install -r bin/AlwaysOnTwitter-debug.apk && adb shell am start -a android.intent.action.MAIN -n com.vodafone.twitter/.client.AlwaysOnTwitter
+
+
+Viewing the logs
+----------------
+
+$ adb logcat |grep -E "AlwaysOnTwitter|TwitterService|OAuthActivity|AndroidRuntime|JavaBinder|dalvikvm|Twitter"
+
+
