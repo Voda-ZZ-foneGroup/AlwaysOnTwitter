@@ -71,7 +71,6 @@ public class TwitterService extends TickerServiceAbstract {
   static boolean unpluggedWifiWakeupActivated = false;
   static Boolean wifiEnabled = null;
   static Boolean powerPlugged = null;
-
   static java.util.LinkedList<EntryTopic> messageList = new java.util.LinkedList<EntryTopic>();
   static int totalNumberOfQueuedMessages = 0;
   static volatile int numberOfQueuedMessagesSinceLastClientActivity = 0;
@@ -279,8 +278,8 @@ public class TwitterService extends TickerServiceAbstract {
     return false;
   }
 
-  public boolean isConnecting() {
-    if(connectThread!=null && twitterStream==null)
+  public boolean isConnecting() { // actually this is isConnectingOrConnected()
+    if(connectThread!=null)
       return true;
     return false;
   }
@@ -413,9 +412,7 @@ public class TwitterService extends TickerServiceAbstract {
         if(linkName!=null)
           displayLink = linkName;
 
-        //if(Config.LOGD) Log.i(LOGTAG, String.format("linkify() offset=%d numberOfCharactersTillNextSpace=%d msgString.length()=%d", offset,numberOfCharactersTillNextSpace,msgString.length()));
-          
-        // java.lang.StringIndexOutOfBoundsException:
+        // todo: java.lang.StringIndexOutOfBoundsException:
         String markup2 = "<a href=\"" + messageLink + "\">" + displayLink + "</a> ";
         if(offset+numberOfCharactersTillNextSpace<msgString.length())
           markup2 += msgString.substring(offset+numberOfCharactersTillNextSpace);
@@ -739,6 +736,14 @@ public class TwitterService extends TickerServiceAbstract {
 
     public void run() {
       if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() ...");
+
+      if(twitterStream!=null) {
+        if(Config.LOGD) Log.i(LOGTAG, "connectStream() TwitterStreamFactory().shutdown()");
+        twitterStream.cleanUp();
+        twitterStream.shutdown();
+        twitterStream = null;
+      }
+
       // create accessToken from preferences "oauth.accessToken" + "oauth.accessTokenSecret"
       String oauthAccessToken = preferences.getString("oauth.accessToken", "");
       if(oauthAccessToken!=null && oauthAccessToken.length()>0) {
@@ -800,7 +805,7 @@ public class TwitterService extends TickerServiceAbstract {
 
       // got our accessToken alright
       if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() TwitterFactory().getInstance(accessToken) ...");
-      twitter = new TwitterFactory().getInstance(accessToken);
+      twitter = new TwitterFactory().getInstance(accessToken); // may take a little time...
       if(twitter==null) {
         if(Config.LOGD) Log.e(LOGTAG, "ConnectThread run() failed to instantiate TwitterFactory()");
         errMsg = "no twitter object from factory with accessToken="+accessToken;
@@ -816,13 +821,6 @@ public class TwitterService extends TickerServiceAbstract {
 
     void connectStream() {
       if(Config.LOGD) Log.i(LOGTAG, "connectStream()...");
-
-      if(twitterStream!=null) {
-        if(Config.LOGD) Log.i(LOGTAG, "connectStream() TwitterStreamFactory().shutdown()");
-        twitterStream.cleanUp();
-        twitterStream.shutdown();
-        twitterStream = null;
-      }
 
       if(statusListener==null) {
         statusListener = new UserStreamListener() {
@@ -848,9 +846,6 @@ public class TwitterService extends TickerServiceAbstract {
           }
 
           public void onException(Exception ex) {
-            // if ex instance of TwitterException -> getRateLimitStatus().getRemainingHits() // see: http://twitter4j.org/en/javadoc-latest/twitter4j/RateLimitStatus.html
-            //  ex.printStackTrace();
-
             int statusCode = ((TwitterException)ex).getStatusCode();
             switch(statusCode) {
               case -1: // Stream closed

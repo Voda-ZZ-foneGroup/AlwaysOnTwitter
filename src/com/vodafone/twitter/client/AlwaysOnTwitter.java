@@ -56,8 +56,10 @@ public class AlwaysOnTwitter extends ListActivity {
   private final static String LOGTAG = "AlwaysOnTwitter";
   private final static String serviceClassName = "com.vodafone.twitter.service.TwitterService";
   private final static String NEW_MSG_BROADCAST_ACTION = "com.vodafone.AlwaysOnTwitterBroadcast"; 
-  private final static String CONSUMERKEY = "_____________________";
-  private final static String CONSUMERSECRET = "_________________________________________";
+//  private final static String CONSUMERKEY = "_____________________";
+//  private final static String CONSUMERSECRET = "_________________________________________";
+  private final static String CONSUMERKEY = "xmgorkXZSEZ5vITrwPbUg";
+  private final static String CONSUMERSECRET = "rrJdaK3DtIDCTyjhbGAn6nqdw10FIlRzDcpYhzyqw";
   private final static int messageListMaxSize = 40;
   private final static int maxRequestElements = 40;
 
