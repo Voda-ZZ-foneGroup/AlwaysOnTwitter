@@ -7,15 +7,21 @@ Info
 
 - Android service for the Twitter streaming API
 
-- Includes sample consumer making use of the service
+- Includes sample consumer (AlwaysOnTwitter.apk) making use of the service
 
-- Service receiving push messages from Twitter
+- Service receiving push messages from Twitter in wake mode and in sleep mode
 
-- Operates on 3G, 4G and WiFi
+- Service operates on 3G, 4G and WiFi
 
-- When the physical network changes, connectivity will be maintained
+- Connectivity will be maintained, when the physical network changes
 
-- Minimal use of energy, made for 24 hour operation
+- Minimal use of energy, suitable for 24 hour operation
+
+- Makes use of http://twitter4j.org library (see libs/ folder)
+
+- Requires Android SDK version-7 as well as JDK 5 (or 6) and Ant 1.8.2
+
+- Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html 
 
 
 Build Setup
@@ -23,12 +29,13 @@ Build Setup
 
 $ cp local.properties.sample local.properties
 
-- adjust SDK path settings in "local.properties"
+- Adjust Android SDK path settings in "local.properties"
 
-- add your own Twitter consuler key and secret to 
-  "src/com/vodafone/twitter/client/AlwaysOnTwitter.java"
-  see: CONSUMERKEY = "___";
-       CONSUMERSECRET = "____";
+- Add your own Twitter consumer key and secret to 
+  "src/com/vodafone/twitter/client/AlwaysOnTwitter.java", replace:
+
+  CONSUMERKEY = "___";
+  CONSUMERSECRET = "____";
 
 
 Building
