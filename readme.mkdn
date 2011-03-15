@@ -24,15 +24,20 @@ Info
 - Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html 
 
 
-One time build setup
---------------------
+Initial build setup
+-------------------
 
 $ cp local.properties.sample local.properties
 
-- Adjust SDK path settings in "local.properties"
+$ cp src/com/vodafone/twitter/client/Constants.java.sample src/com/vodafone/twitter/client/Constants.java
 
-- Hardcode your personal app key + secret in 
-  AlwaysOnTwitter.java: CONSUMERKEY + CONSUMERSECRET
+- Adjust SDK path settings in "local.properties" if ncecessary
+
+- Enter your custom Twitter app CONSUMERKEY + CONSUMERSECRET in 
+  src/com/vodafone/twitter/client/Constants.java
+  
+- Please note that "local.properties" and "src/com/vodafone/twitter/client/Constants.java" 
+  should never be contributed back to code repository
 
 
 Building

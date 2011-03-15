@@ -56,8 +56,8 @@ public class AlwaysOnTwitter extends ListActivity {
   private final static String LOGTAG = "AlwaysOnTwitter";
   private final static String serviceClassName = "com.vodafone.twitter.service.TwitterService";
   private final static String NEW_MSG_BROADCAST_ACTION = "com.vodafone.AlwaysOnTwitterBroadcast"; 
-  private final static String CONSUMERKEY = "_____________________";
-  private final static String CONSUMERSECRET = "_________________________________________";
+//  private final static String CONSUMERKEY = "_____________________";
+//  private final static String CONSUMERSECRET = "_________________________________________";
   private final static int messageListMaxSize = 40;
   private final static int maxRequestElements = 40;
 
@@ -111,8 +111,8 @@ public class AlwaysOnTwitter extends ListActivity {
     
     Intent serviceIntent = new Intent();
     serviceIntent.setClassName(this, serviceClassName);
-    serviceIntent.putExtra("consumerKey", CONSUMERKEY);
-    serviceIntent.putExtra("consumerSecret", CONSUMERSECRET);
+    serviceIntent.putExtra("consumerKey", Constants.CONSUMERKEY);
+    serviceIntent.putExtra("consumerSecret", Constants.CONSUMERSECRET);
     serviceIntent.putExtra("intentFilter", NEW_MSG_BROADCAST_ACTION);
     startService(serviceIntent);
 
