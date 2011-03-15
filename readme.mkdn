@@ -36,6 +36,8 @@ $ cp src/com/vodafone/twitter/client/Constants.java.sample src/com/vodafone/twit
 - Enter your custom Twitter app CONSUMERKEY + CONSUMERSECRET in 
   src/com/vodafone/twitter/client/Constants.java
   
+  You can apply for these keys here: https://dev.twitter.com/anywhere/apps/new
+  
 - Please note that "local.properties" and "src/com/vodafone/twitter/client/Constants.java" 
   should never be contributed back to code repository
 
