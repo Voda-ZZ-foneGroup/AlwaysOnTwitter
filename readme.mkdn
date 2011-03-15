@@ -5,21 +5,23 @@ AlwaysOnTwitter Android Service
 Info
 ----
 
-- Android service for the Twitter streaming API
+- This is an Android service that connects to the Twitter streaming API
 
-- Includes sample consumer (AlwaysOnTwitter.apk) making use of the service
+- Includes a sample consumer (AlwaysOnTwitter.apk) making use of this service
 
-- Service receiving push messages from Twitter in wake mode and in sleep mode
+- Service receiving push messages from Twitter in wake and sleep mode
 
 - Service operates on 3G, 4G and WiFi
 
 - Connectivity will be maintained, when the physical network changes
 
+- OAuth support with automatic pin detection
+
 - Minimal use of energy, suitable for 24 hour operation
 
 - Makes use of http://twitter4j.org library (see libs/ folder)
 
-- Requires Android SDK version-7 as well as JDK 5 (or 6) and Ant 1.8.2
+- Requires Android SDK version-7 as well as JDK 5/6 and Ant 1.8.2
 
 - Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html 
 
