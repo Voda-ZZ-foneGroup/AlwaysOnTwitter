@@ -54,8 +54,8 @@ Installation and remote execution
 $ adb install -r bin/AlwaysOnTwitter-debug.apk && adb shell am start -a android.intent.action.MAIN -n com.vodafone.twitter/.client.AlwaysOnTwitter
 
 
-Viewing the logs
-----------------
+Viewing the logs at runtime
+---------------------------
 
 $ adb logcat |grep -E "AlwaysOnTwitter|TwitterService|OAuthActivity|AndroidRuntime|JavaBinder|dalvikvm|Twitter"
 
