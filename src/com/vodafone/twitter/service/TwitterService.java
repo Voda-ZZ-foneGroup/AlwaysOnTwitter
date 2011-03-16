@@ -584,7 +584,7 @@ public class TwitterService extends TickerServiceAbstract {
 
   private boolean processStatus(Status status) {
     if(msgWithSameId(status.getId())!=null) {
-      if(Config.LOGD) Log.i(LOGTAG, "processStatus() found msgWithSameId - don't process");
+      if(Config.LOGD) Log.i(LOGTAG, "processStatus() found msgWithSameId "+status.getId()+" - don't process");
       return false;
     }
 
@@ -693,14 +693,14 @@ public class TwitterService extends TickerServiceAbstract {
 
         Paging paging = new Paging();
         paging.setCount(maxQueueMessages);
+        if(Config.LOGD) Log.i(LOGTAG, String.format("fetchHomeTimeline() twitter.getHomeTimeline() maxQueueMessages=%d",maxQueueMessages));
         statuses = twitter.getHomeTimeline(paging); // java.lang.IllegalStateException + android.os.NetworkOnMainThreadException
+        
         if(statuses!=null) {
           count = statuses.size();
-          if(Config.LOGD) Log.i(LOGTAG, String.format("fetchHomeTimeline() count=%d, messageList.size()=%d",count,messageListSize));
+          //if(Config.LOGD) Log.i(LOGTAG, String.format("fetchHomeTimeline() count=%d, messageList.size()=%d",count,messageListSize));
 
-          //System.out.println("Showing @" + user.getScreenName() + "'s home timeline.");
           for(Status status : statuses) {
-            //System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
             if(processStatus(status))
               countProcessed++;
           }
