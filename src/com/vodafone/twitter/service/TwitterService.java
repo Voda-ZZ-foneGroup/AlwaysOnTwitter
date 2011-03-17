@@ -95,6 +95,7 @@ public class TwitterService extends TickerServiceAbstract {
   static volatile int totalNumberOfBrodcastsSend = 0;
   static volatile ActivityUpdateThread activityUpdateThread = null;
   static volatile boolean activityUpdatePending = false;
+  static boolean fetchHomeTimelineDone = false;
   static boolean linkifyMessages = false;
   //static UserStream userStream = null;
   private String messageLink = null;
@@ -809,8 +810,13 @@ public class TwitterService extends TickerServiceAbstract {
         return;
       }
 
-      int count = fetchHomeTimeline();
-      if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() received count="+count+" from fetchHomeTimeline()");
+      if(!fetchHomeTimelineDone) {
+        // fetch HomeTimeline only once after the service has established a connection
+        int count = fetchHomeTimeline();
+        fetchHomeTimelineDone = true;
+        if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() received count="+count+" from fetchHomeTimeline()");
+      }
+
       numberOfQueuedMessagesSinceLastClientActivity = 0;
       connectStream();
     }
@@ -845,11 +851,11 @@ public class TwitterService extends TickerServiceAbstract {
             int statusCode = ((TwitterException)ex).getStatusCode();
             switch(statusCode) {
               case -1: // Stream closed
-                // be patient, don't overload twitter service
                 Log.e(LOGTAG, "ConnectThread StatusListener onException -1: Stream closed");
-                errMsg = "stream closed exception";
-                try { Thread.sleep(20000); } catch(Exception ex2) {};
-                // todo: do nothing ???
+                errMsg = "stream closed";
+//                // be patient, don't overload twitter service
+//                try { Thread.sleep(20000); } catch(Exception ex2) {};
+                fetchHomeTimelineDone=false;
                 break;
 
               case 401: // Authentication credentials were missing or incorrect
