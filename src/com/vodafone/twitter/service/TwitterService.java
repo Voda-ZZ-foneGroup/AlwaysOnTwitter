@@ -71,7 +71,7 @@ public class TwitterService extends TickerServiceAbstract {
   static boolean unpluggedWifiWakeupActivated = false;
   static Boolean wifiEnabled = null;
   static Boolean powerPlugged = null;
-  static java.util.LinkedList<EntryTopic> messageList = new java.util.LinkedList<EntryTopic>();
+  static java.util.LinkedList<EntryTopic> messageList = (java.util.LinkedList<EntryTopic>)Collections.synchronizedList(new java.util.LinkedList<EntryTopic>());
   static int totalNumberOfQueuedMessages = 0;
   static volatile int numberOfQueuedMessagesSinceLastClientActivity = 0;
   static volatile boolean activityPaused = false;
@@ -178,7 +178,7 @@ public class TwitterService extends TickerServiceAbstract {
     };
     registerReceiver(onBatteryChanged, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-    // disabled for now: check hasVibrator sample code
+    // sample code: check hasVibrator
     // PackageManager pm = getPackageManager();
     // boolean hasCompass = pm.hasSystemFeature(PackageManager.FEATURE_VIBRATOR_SERVICE);
     // vibrator = (Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -292,29 +292,24 @@ public class TwitterService extends TickerServiceAbstract {
 
   public synchronized List<EntryTopic> getMessageListLatestAfterMS(long lastNewestMessageMS, int maxCount) {
     List<EntryTopic> retlist = null;
+    int count=0;
     synchronized(messageList) {
-      int count=0;
-      synchronized(messageList) {
-        while(count<maxCount && count<messageList.size() && messageList.get(count).createTimeMs > lastNewestMessageMS) {
-          count++;
-        }
-      }
-      if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatestAfterMS(%d) count=%d messageList.size()=%d",lastNewestMessageMS,count,messageList.size()));
-//    retlist = Collections.synchronizedList(messageList.subList(0,count));
-      retlist = Collections.unmodifiableList(messageList.subList(0,count));
+      while(count<maxCount && count<messageList.size() && messageList.get(count).createTimeMs > lastNewestMessageMS)
+        count++;
+      retlist = messageList.subList(0,count);
     }
+    if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatestAfterMS(%d) count=%d messageList.size()=%d",lastNewestMessageMS,count,messageList.size()));
     return retlist;
   }
 
   public synchronized List<EntryTopic> getMessageListLatest(int maxCount) {
-    if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatest(%d) connected=%b",maxCount,isConnected()));
     List<EntryTopic> retlist=null;
     synchronized(messageList) {
       if(maxCount>messageList.size())
         maxCount = messageList.size();
-//    retlist = Collections.synchronizedList(messageList.subList(0,maxCount));
-      retlist = Collections.unmodifiableList(messageList.subList(0,maxCount));
+      retlist = messageList.subList(0,maxCount);
     }
+    if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatest() maxCount=%d connected=%b",maxCount,isConnected()));
     return retlist;
   }
 
@@ -557,20 +552,21 @@ public class TwitterService extends TickerServiceAbstract {
       while(idx<messageList.size() && messageList.get(idx).createTimeMs != timeMs)
         idx++;
       if(idx>=messageList.size())
-        return -1;
+        idx=-1;
     }
     return idx;
   }
 
   private EntryTopic msgWithSameId(long id) {
+    EntryTopic retEntryTopic = null;
     int idx=0;
     synchronized(messageList) {
       while(idx<messageList.size() && messageList.get(idx).id != id)
         idx++;
-      if(idx>=messageList.size())
-        return null;
-      return messageList.get(idx);
-    } 
+      if(idx<messageList.size())
+        retEntryTopic = messageList.get(idx);
+    }
+    return retEntryTopic;
   }
 
   private int findIdxOfFirstOlderMsg(EntryTopic msgObject) {
