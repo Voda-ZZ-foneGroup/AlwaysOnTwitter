@@ -71,7 +71,7 @@ public class TwitterService extends TickerServiceAbstract {
   static boolean unpluggedWifiWakeupActivated = false;
   static Boolean wifiEnabled = null;
   static Boolean powerPlugged = null;
-  static java.util.LinkedList<EntryTopic> messageList = (java.util.LinkedList<EntryTopic>)Collections.synchronizedList(new java.util.LinkedList<EntryTopic>());
+  static java.util.LinkedList<EntryTopic> messageList = new java.util.LinkedList<EntryTopic>();
   static int totalNumberOfQueuedMessages = 0;
   static volatile int numberOfQueuedMessagesSinceLastClientActivity = 0;
   static volatile boolean activityPaused = false;
@@ -296,7 +296,7 @@ public class TwitterService extends TickerServiceAbstract {
     synchronized(messageList) {
       while(count<maxCount && count<messageList.size() && messageList.get(count).createTimeMs > lastNewestMessageMS)
         count++;
-      retlist = messageList.subList(0,count);
+      retlist = Collections.synchronizedList(messageList.subList(0,count));
     }
     if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatestAfterMS(%d) count=%d messageList.size()=%d",lastNewestMessageMS,count,messageList.size()));
     return retlist;
@@ -307,7 +307,7 @@ public class TwitterService extends TickerServiceAbstract {
     synchronized(messageList) {
       if(maxCount>messageList.size())
         maxCount = messageList.size();
-      retlist = messageList.subList(0,maxCount);
+      retlist = Collections.synchronizedList(messageList.subList(0,maxCount));
     }
     if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatest() maxCount=%d connected=%b",maxCount,isConnected()));
     return retlist;
@@ -683,9 +683,9 @@ public class TwitterService extends TickerServiceAbstract {
       List<Status> statuses = null;
       try {
         int messageListSize = 0;
-        synchronized(messageList) {
-          messageListSize = messageList.size();
-        }
+//        synchronized(messageList) {
+//          messageListSize = messageList.size();
+//        }
 
         Paging paging = new Paging();
         paging.setCount(maxQueueMessages);
@@ -694,7 +694,7 @@ public class TwitterService extends TickerServiceAbstract {
         
         if(statuses!=null) {
           count = statuses.size();
-          //if(Config.LOGD) Log.i(LOGTAG, String.format("fetchHomeTimeline() count=%d, messageList.size()=%d",count,messageListSize));
+//          if(Config.LOGD) Log.i(LOGTAG, String.format("fetchHomeTimeline() count=%d, messageList.size()=%d",count,messageListSize));
 
           for(Status status : statuses) {
             if(processStatus(status))
