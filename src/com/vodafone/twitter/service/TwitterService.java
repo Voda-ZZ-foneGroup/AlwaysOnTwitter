@@ -982,7 +982,7 @@ public class TwitterService extends TickerServiceAbstract {
   private class ActivityUpdateThread extends Thread {
     // this helper thread sends delayed broadcasts to our activity
     // the delay is used to prevent multiple broadcasts invoked by multiple tweets being received 'at once'
-    int delayMS = 2000;
+    int delayMS = 1200;
 
     ActivityUpdateThread() {
     }
