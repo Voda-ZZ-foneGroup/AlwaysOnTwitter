@@ -403,7 +403,7 @@ public class TwitterService extends TickerServiceAbstract {
 	    if(numberOfCharactersTillNextSpace>0)
 	      messageLink = messageLink.substring(0,numberOfCharactersTillNextSpace);
 	    else
-		    numberOfCharactersTillNextSpace = messageLink.length();    // java.lang.NullPointerException
+		    numberOfCharactersTillNextSpace = messageLink.length();
 
       int idxTwitpic = messageLink.indexOf("//twitpic.com/");
       if(idxTwitpic>=0) {
@@ -679,7 +679,7 @@ public class TwitterService extends TickerServiceAbstract {
       if(!activityUpdatePending)
       {
         activityUpdatePending = true; 
-        if(Config.LOGD) Log.i(LOGTAG, "notifyClient() new ActivityUpdateThread()");
+        //if(Config.LOGD) Log.i(LOGTAG, "notifyClient() new ActivityUpdateThread()");
         activityUpdateThread = new ActivityUpdateThread();
         activityUpdateThread.start();
       }
@@ -693,18 +693,14 @@ public class TwitterService extends TickerServiceAbstract {
       List<Status> statuses = null;
       try {
         int messageListSize = 0;
-//        synchronized(messageList) {
-//          messageListSize = messageList.size();
-//        }
 
         Paging paging = new Paging();
         paging.setCount(maxQueueMessages);
         if(Config.LOGD) Log.i(LOGTAG, String.format("fetchHomeTimeline() twitter.getHomeTimeline() maxQueueMessages=%d",maxQueueMessages));
-        statuses = twitter.getHomeTimeline(paging); // java.lang.IllegalStateException + android.os.NetworkOnMainThreadException
+        statuses = twitter.getHomeTimeline(paging);
         
         if(statuses!=null) {
           count = statuses.size();
-//          if(Config.LOGD) Log.i(LOGTAG, String.format("fetchHomeTimeline() count=%d, messageList.size()=%d",count,messageListSize));
 
           for(Status status : statuses) {
             if(processStatus(status))
