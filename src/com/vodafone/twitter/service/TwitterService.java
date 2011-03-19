@@ -19,6 +19,7 @@ package com.vodafone.twitter.service;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.HashMap;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -71,7 +72,7 @@ public class TwitterService extends TickerServiceAbstract {
   static boolean unpluggedWifiWakeupActivated = false;
   static Boolean wifiEnabled = null;
   static Boolean powerPlugged = null;
-  static java.util.LinkedList<EntryTopic> messageList = new java.util.LinkedList<EntryTopic>();
+  static LinkedList<EntryTopic> messageList = new LinkedList<EntryTopic>();
   static int totalNumberOfQueuedMessages = 0;
   static volatile int numberOfQueuedMessagesSinceLastClientActivity = 0;
   static volatile boolean activityPaused = false;
@@ -292,25 +293,33 @@ public class TwitterService extends TickerServiceAbstract {
   }
 
   public synchronized List<EntryTopic> getMessageListLatestAfterMS(long lastNewestMessageMS, int maxCount) {
-    List<EntryTopic> retlist = null;
+    List<EntryTopic> retlist = new LinkedList<EntryTopic>();
     int count=0;
     synchronized(messageList) {
       while(count<maxCount && count<messageList.size() && messageList.get(count).createTimeMs > lastNewestMessageMS)
         count++;
-      retlist = Collections.synchronizedList(messageList.subList(0,count));
+      //retlist = Collections.synchronizedList(messageList.subList(0,count));
+      List<EntryTopic> sublist = messageList.subList(0,count);
+      int sublistSize = sublist.size();
+      for(int i=0; i<sublistSize; i++)
+        retlist.add(sublist.get(i));
     }
-    if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatestAfterMS(%d) count=%d messageList.size()=%d",lastNewestMessageMS,count,messageList.size()));
+    if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatestAfterMS(%d) count=%d retlist.size()=%d",lastNewestMessageMS,count,retlist.size()));
     return retlist;
   }
 
   public synchronized List<EntryTopic> getMessageListLatest(int maxCount) {
-    List<EntryTopic> retlist=null;
+    List<EntryTopic> retlist = new LinkedList<EntryTopic>();
     synchronized(messageList) {
       if(maxCount>messageList.size())
         maxCount = messageList.size();
-      retlist = Collections.synchronizedList(messageList.subList(0,maxCount));
+      //retlist = Collections.synchronizedList(messageList.subList(0,maxCount));
+      List<EntryTopic> sublist = messageList.subList(0,maxCount);
+      int sublistSize = sublist.size();
+      for(int i=0; i<sublistSize; i++)
+        retlist.add(sublist.get(i));
     }
-    if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatest() maxCount=%d connected=%b",maxCount,isConnected()));
+    if(Config.LOGD) Log.i(LOGTAG, String.format("getMessageListLatest() maxCount=%d retlist.size()=%d",maxCount,retlist.size()));
     return retlist;
   }
 
