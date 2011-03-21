@@ -140,19 +140,19 @@ public class TwitterService extends TickerServiceAbstract {
         int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1); 
         switch(state) {
           case WifiManager.WIFI_STATE_DISABLED: 
-            if(Config.LOGD) Log.i(LOGTAG, "onReceive() WIFI_STATE_DISABLED");
+            if(Config.LOGD) Log.i(LOGTAG, "onWifiChanged WIFI_STATE_DISABLED");
             wifiEnabled = new Boolean(false);
             checkRunningOnUnpluggedWifi();
             break; 
           
           case WifiManager.WIFI_STATE_ENABLED: 
-            if(Config.LOGD) Log.i(LOGTAG, "onReceive() WIFI_STATE_ENABLED");
+            if(Config.LOGD) Log.i(LOGTAG, "onWifiChanged WIFI_STATE_ENABLED");
             wifiEnabled = new Boolean(true);
             checkRunningOnUnpluggedWifi();
             break; 
           
           case WifiManager.WIFI_STATE_UNKNOWN : 
-            if(Config.LOGD) Log.i(LOGTAG, "onReceive() WIFI_STATE_UNKNOWN");
+            if(Config.LOGD) Log.i(LOGTAG, "onWifiChanged WIFI_STATE_UNKNOWN");
             //wifiEnabled = false;
             break; 
         }
