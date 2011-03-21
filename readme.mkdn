@@ -62,3 +62,4 @@ Viewing the logs at runtime
 $ adb logcat |grep -E "AlwaysOnTwitter|TwitterService|OAuthActivity|AndroidRuntime|JavaBinder|dalvikvm|Twitter"
 
 
+
