@@ -857,7 +857,7 @@ public class TwitterService extends TickerServiceAbstract {
             switch(statusCode) {
               case -1: // Stream closed
                 Log.e(LOGTAG, "ConnectThread StatusListener onException -1: Stream closed");
-                errMsg = "stream closed";
+                errMsg = "reconnecting...";
 //                // be patient, don't overload twitter service
 //                try { Thread.sleep(20000); } catch(Exception ex2) {};
                 fetchHomeTimelineDone=false;
