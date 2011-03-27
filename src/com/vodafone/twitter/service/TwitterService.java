@@ -858,14 +858,13 @@ public class TwitterService extends TickerServiceAbstract {
               case -1: // Stream closed
                 Log.e(LOGTAG, "ConnectThread StatusListener onException -1: Stream closed");
                 errMsg = "reconnecting...";
-//                // be patient, don't overload twitter service
-//                try { Thread.sleep(20000); } catch(Exception ex2) {};
+                //try { Thread.sleep(20000); } catch(Exception ex2) {};
                 fetchHomeTimelineDone=false;
                 break;
 
               case 401: // Authentication credentials were missing or incorrect
                 Log.e(LOGTAG, "ConnectThread StatusListener onException 401: Authentication credentials were missing or incorrect");
-                errMsg = "Authentication credentials were missing or incorrect (401)";
+                errMsg = "Authentication credentials missing or incorrect (401)";
                 try { Thread.sleep(3000); } catch(Exception ex2) {};
                 connectStream();
                 // todo: it won't be enough to start a new conectStream() ???
@@ -873,13 +872,14 @@ public class TwitterService extends TickerServiceAbstract {
 
               case 420: // The number of requests you have made exceeds the quota afforded by your assigned rate limit
                 Log.e(LOGTAG, "ConnectThread StatusListener onException "+ex);
-                errMsg = "number of requests (420)";
+                errMsg = "too many requests (420)";
                 try { Thread.sleep(20000); } catch(Exception ex2) {};
                 // todo: ???
                 break;
 
               default:
                 Log.e(LOGTAG, "ConnectThread StatusListener onException "+ex);
+                errMsg = ex.getMessage();
                 // todo: ???
                 break;
             }
@@ -897,6 +897,7 @@ public class TwitterService extends TickerServiceAbstract {
                    
           public void onDirectMessage(DirectMessage directMessage) { 
             if(Config.LOGD) Log.i(LOGTAG, String.format("ConnectThread StatusListener onDirectMessage"));
+            // todo: create a new EntryTopic?
           };
                    
           public void onFavorite(User source, User target, Status favoritedStatus) { 
