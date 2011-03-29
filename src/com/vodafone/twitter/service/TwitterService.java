@@ -243,6 +243,9 @@ public class TwitterService extends TickerServiceAbstract {
       unregisterReceiver(onBatteryChanged);
   }
 
+
+  // public TickerService specific methods
+
   public class LocalBinder extends TickerServiceAbstract.LocalBinder {
     public TwitterService getService() {
       return TwitterService.this;
@@ -323,65 +326,11 @@ public class TwitterService extends TickerServiceAbstract {
     return retlist;
   }
 
-  private boolean checkRunningOnUnpluggedWifi() {
-    boolean newUnpluggedWifiWakeupActivated = false;
-    if(wifiEnabled!=null && wifiEnabled && powerPlugged!=null && !powerPlugged)
-      newUnpluggedWifiWakeupActivated = true;
 
-    if(newUnpluggedWifiWakeupActivated!=unpluggedWifiWakeupActivated) {
-      unpluggedWifiWakeupActivated=newUnpluggedWifiWakeupActivated;
-      if(unpluggedWifiWakeupActivated) {
-        // device has gone into: WIFI + UNPLUGGED, we need to activate automatic "unplugged-Wifi" wakeups
-        if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() NOW RUNNING IN UNPLUGGED+WIFI MODE");
+  // public TwitterService specific methods
 
-        if(wakeLockNoScreen==null) {
-          Log.e(LOGTAG, "checkRunningOnUnpluggedWifi() wakeLockNoScreen NOT AVAILABLE, cannot create RepeatingAlarmReceiver");
-        } else {
-          Intent intent = new Intent(TwitterService.this, RepeatingAlarmReceiver.class);
-          pendingIntent = PendingIntent.getBroadcast(TwitterService.this, 0, intent, 0);
-          if(alarmManager==null)
-            alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-          alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 
-                                    System.currentTimeMillis() + (600*1000),        // 1st wakeup in 10 minutes (=600*1000) from now
-                                    480*1000,                                       // followed up every 8 minutes (=480*1000)
-                                    pendingIntent);
-
-          if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() ACTIVATED unpluggedWifiWakeup");
-        }
-      } else {
-        // just now, the device has gone OUT of: WIFI + UNPLUGGED  (it's now either: 3G+unplugged, or WiFi+plugged, or 3G+plugged)
-        if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() WE DON'T RUN IN UNPLUGGED+WIFI ANYMORE");
-
-        // deactivate unplugged-Wifi-Wakeup
-        if(alarmManager!=null) {
-          if(pendingIntent!=null) {
-            alarmManager.cancel(pendingIntent);
-            pendingIntent=null;
-            if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() DE-ACTIVATED unpluggedWifiWakeup");
-          } else
-            if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() DE-ACTIVATED unpluggedWifiWakeup pendingIntent==null");
-        } else
-          if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() DE-ACTIVATED unpluggedWifiWakeup alarmManager==null");
-      }
-    }
-
-    return unpluggedWifiWakeupActivated;
-  }
-
-  public static class RepeatingAlarmReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      // device partly and briefly waking up from sleep
-      Date date = new Date();
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-      if(wakeLockNoScreen!=null) {
-        // we need to stay awake enough time to let wifi re-connect
-        if(Config.LOGD) Log.i(LOGTAG, "RepeatingAlarmReceiver UBPLUGGED+WIFI KEEP WAKE 10 secs starting at "+simpleDateFormat.format(date));
-        wakeLockNoScreen.acquire(10000l);    
-      } else {
-        if(Config.LOGD) Log.i(LOGTAG, "RepeatingAlarmReceiver no wakeLockNoScreen, cannot activateWiFiConnection "+simpleDateFormat.format(date));
-      }
-    }
+  public Twitter getTwitterObject() {
+    return twitter;
   }
 
   public String linkify(String msgString, String linkName, boolean twitterMode) {
@@ -555,6 +504,70 @@ public class TwitterService extends TickerServiceAbstract {
 
     (connectThread = new ConnectThread(this)).start();
   }
+
+  // private methods
+
+  private boolean checkRunningOnUnpluggedWifi() {
+    boolean newUnpluggedWifiWakeupActivated = false;
+    if(wifiEnabled!=null && wifiEnabled && powerPlugged!=null && !powerPlugged)
+      newUnpluggedWifiWakeupActivated = true;
+
+    if(newUnpluggedWifiWakeupActivated!=unpluggedWifiWakeupActivated) {
+      unpluggedWifiWakeupActivated=newUnpluggedWifiWakeupActivated;
+      if(unpluggedWifiWakeupActivated) {
+        // device has gone into: WIFI + UNPLUGGED, we need to activate automatic "unplugged-Wifi" wakeups
+        if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() NOW RUNNING IN UNPLUGGED+WIFI MODE");
+
+        if(wakeLockNoScreen==null) {
+          Log.e(LOGTAG, "checkRunningOnUnpluggedWifi() wakeLockNoScreen NOT AVAILABLE, cannot create RepeatingAlarmReceiver");
+        } else {
+          Intent intent = new Intent(TwitterService.this, RepeatingAlarmReceiver.class);
+          pendingIntent = PendingIntent.getBroadcast(TwitterService.this, 0, intent, 0);
+          if(alarmManager==null)
+            alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+          alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 
+                                    System.currentTimeMillis() + (600*1000),        // 1st wakeup in 10 minutes (=600*1000) from now
+                                    480*1000,                                       // followed up every 8 minutes (=480*1000)
+                                    pendingIntent);
+
+          if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() ACTIVATED unpluggedWifiWakeup");
+        }
+      } else {
+        // just now, the device has gone OUT of: WIFI + UNPLUGGED  (it's now either: 3G+unplugged, or WiFi+plugged, or 3G+plugged)
+        if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() WE DON'T RUN IN UNPLUGGED+WIFI ANYMORE");
+
+        // deactivate unplugged-Wifi-Wakeup
+        if(alarmManager!=null) {
+          if(pendingIntent!=null) {
+            alarmManager.cancel(pendingIntent);
+            pendingIntent=null;
+            if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() DE-ACTIVATED unpluggedWifiWakeup");
+          } else
+            if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() DE-ACTIVATED unpluggedWifiWakeup pendingIntent==null");
+        } else
+          if(Config.LOGD) Log.i(LOGTAG, "checkRunningOnUnpluggedWifi() DE-ACTIVATED unpluggedWifiWakeup alarmManager==null");
+      }
+    }
+
+    return unpluggedWifiWakeupActivated;
+  }
+
+  public static class RepeatingAlarmReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      // device partly and briefly waking up from sleep
+      Date date = new Date();
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+      if(wakeLockNoScreen!=null) {
+        // we need to stay awake enough time to let wifi re-connect
+        if(Config.LOGD) Log.i(LOGTAG, "RepeatingAlarmReceiver UBPLUGGED+WIFI KEEP WAKE 10 secs starting at "+simpleDateFormat.format(date));
+        wakeLockNoScreen.acquire(10000l);    
+      } else {
+        if(Config.LOGD) Log.i(LOGTAG, "RepeatingAlarmReceiver no wakeLockNoScreen, cannot activateWiFiConnection "+simpleDateFormat.format(date));
+      }
+    }
+  }
+
 
   private int findIdxOfMsgWithSameTimeMs(long timeMs) {
     int idx=0;
