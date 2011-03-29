@@ -64,7 +64,7 @@ import twitter4j.auth.*;
 import org.timur.glticker.EntryTopic;
 import org.timur.glticker.TickerServiceAbstract;
 
-public class TwitterService extends TickerServiceAbstract {
+public class TwitterService extends TwitterServiceAbstract {
 
   static final String LOGTAG = "TwitterService";
   static final String PREFS_NAME = "com.vodafone.twitterservice";
@@ -460,7 +460,7 @@ public class TwitterService extends TickerServiceAbstract {
     return messageLink;
   }
 
-  public synchronized void twitterLogin(String pin) {
+  public void twitterLogin(String pin) {
     // called by OAuthActivity
     if(Config.LOGD) Log.i(LOGTAG, String.format("twitterLogin pin=%s",pin));
 
