@@ -506,11 +506,16 @@ public class TwitterService extends TwitterServiceAbstract {
   }
 
   public void clearTwitterLogin() {
+    if(Config.LOGD) Log.i(LOGTAG, "clearTwitterLogin()");
+    twitterStream.cleanUp();
+    twitterStream.shutdown();
+    //try { Thread.sleep(3000); } catch(Exception ex2) {};
     SharedPreferences.Editor editor = preferences.edit();
-    //editor.putString("oauth.accessToken", accessToken.getToken());
+    editor.putString("oauth.accessToken", "");
     editor.putString("oauth.accessTokenSecret", "");
     editor.commit();
-    (connectThread = new ConnectThread(this)).start();
+    //if(Config.LOGD) Log.i(LOGTAG, "clearTwitterLogin() new ConnectThread()");
+    //(connectThread = new ConnectThread(this)).start();
   }
 
   // private methods
@@ -575,7 +580,6 @@ public class TwitterService extends TwitterServiceAbstract {
       }
     }
   }
-
 
   private int findIdxOfMsgWithSameTimeMs(long timeMs) {
     int idx=0;
@@ -767,11 +771,12 @@ public class TwitterService extends TwitterServiceAbstract {
         twitterStream = null;
       }
 
+      accessToken = null;
       // create accessToken from preferences "oauth.accessToken" + "oauth.accessTokenSecret"
       String oauthAccessToken = preferences.getString("oauth.accessToken", "");
       if(oauthAccessToken!=null && oauthAccessToken.length()>0) {
         String oauthAccessTokenSecret = preferences.getString("oauth.accessTokenSecret", "");
-        if(Config.LOGD) Log.i(LOGTAG, String.format("ConnectThread run() preferences oauth.accessTokenSecret=%s",oauthAccessTokenSecret));
+        if(Config.LOGD) Log.i(LOGTAG, String.format("ConnectThread run() preferences oauth.accessTokenSecret=[%s/%s]",oauthAccessToken,oauthAccessTokenSecret));
         if(oauthAccessTokenSecret!=null && oauthAccessTokenSecret.length()>0) {
           accessToken = new AccessToken(oauthAccessToken,oauthAccessTokenSecret);
         }
@@ -887,6 +892,8 @@ public class TwitterService extends TwitterServiceAbstract {
                 Log.e(LOGTAG, "ConnectThread StatusListener onException 401: Authentication credentials were missing or incorrect");
                 errMsg = "Authentication credentials missing or incorrect (401)";
                 try { Thread.sleep(3000); } catch(Exception ex2) {};
+
+                // todo: ???
                 connectStream();
                 // todo: it won't be enough to start a new conectStream() ???
                 break;
