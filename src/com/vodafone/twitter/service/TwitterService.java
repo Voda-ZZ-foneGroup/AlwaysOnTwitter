@@ -509,13 +509,10 @@ public class TwitterService extends TwitterServiceAbstract {
     if(Config.LOGD) Log.i(LOGTAG, "clearTwitterLogin()");
     twitterStream.cleanUp();
     twitterStream.shutdown();
-    //try { Thread.sleep(3000); } catch(Exception ex2) {};
     SharedPreferences.Editor editor = preferences.edit();
     editor.putString("oauth.accessToken", "");
     editor.putString("oauth.accessTokenSecret", "");
     editor.commit();
-    //if(Config.LOGD) Log.i(LOGTAG, "clearTwitterLogin() new ConnectThread()");
-    //(connectThread = new ConnectThread(this)).start();
   }
 
   // private methods
