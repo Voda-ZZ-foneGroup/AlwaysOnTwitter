@@ -505,6 +505,14 @@ public class TwitterService extends TwitterServiceAbstract {
     (connectThread = new ConnectThread(this)).start();
   }
 
+  public void clearTwitterLogin() {
+    SharedPreferences.Editor editor = preferences.edit();
+    //editor.putString("oauth.accessToken", accessToken.getToken());
+    editor.putString("oauth.accessTokenSecret", "");
+    editor.commit();
+    (connectThread = new ConnectThread(this)).start();
+  }
+
   // private methods
 
   private boolean checkRunningOnUnpluggedWifi() {

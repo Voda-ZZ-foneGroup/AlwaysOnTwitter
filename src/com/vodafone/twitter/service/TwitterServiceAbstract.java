@@ -24,5 +24,6 @@ public abstract class TwitterServiceAbstract extends TickerServiceAbstract {
   public abstract String linkify(String msgString, String linkName, boolean twitterMode);
   public abstract String linkifyLink();
   public abstract void twitterLogin(String pin);
+  public abstract void clearTwitterLogin();
 }
 
