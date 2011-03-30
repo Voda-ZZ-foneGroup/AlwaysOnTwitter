@@ -466,7 +466,9 @@ public class TwitterService extends TwitterServiceAbstract {
 
     if(pin==null || pin.length()==0) {
       // pin-entry was aborted or failed for other reason
-      if(Config.LOGD) Log.i(LOGTAG, "twitterLogin pin-entry was aborted");
+      String errorText = "twitterLogin pin entry has failed";
+      if(Config.LOGD) Log.i(LOGTAG, errorText);
+      errMsg = errorText;
       connectThread = null;
       return;
     }
