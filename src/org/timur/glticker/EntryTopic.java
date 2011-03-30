@@ -20,6 +20,7 @@ public class EntryTopic
 {
   public int     regionID = 0;
   public String  channelName = null;
+  public String  shortName = null;
   public int     priority = 0;
   public String  feedName = null;
   public String  feedTemplate = null;

@@ -647,6 +647,7 @@ public class TwitterService extends TwitterServiceAbstract {
                                            timeMs,
                                            status.getId(),
                                            channelImageString);
+    feedEntry.shortName = user.getScreenName();
     synchronized(messageList)
     {
       // messageList is always sorted with the newest items on top
