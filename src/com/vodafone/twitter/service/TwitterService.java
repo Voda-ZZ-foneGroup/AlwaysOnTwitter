@@ -507,8 +507,13 @@ public class TwitterService extends TwitterServiceAbstract {
 
   public void clearTwitterLogin() {
     if(Config.LOGD) Log.i(LOGTAG, "clearTwitterLogin()");
-    twitterStream.cleanUp();
-    twitterStream.shutdown();
+    if(twitterStream!=null) {
+      if(Config.LOGD) Log.i(LOGTAG, "clearTwitterLogin() twitterStream.cleanUp()");
+      twitterStream.cleanUp();
+      if(Config.LOGD) Log.i(LOGTAG, "clearTwitterLogin() twitterStream.shutdown()");
+      twitterStream.shutdown();
+      twitterStream = null;
+    }
     SharedPreferences.Editor editor = preferences.edit();
     editor.putString("oauth.accessToken", "");
     editor.putString("oauth.accessTokenSecret", "");
@@ -763,8 +768,9 @@ public class TwitterService extends TwitterServiceAbstract {
       if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() ...");
 
       if(twitterStream!=null) {
-        if(Config.LOGD) Log.i(LOGTAG, "connectStream() TwitterStreamFactory().shutdown()");
+        if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() TwitterStreamFactory().cleanup()");
         twitterStream.cleanUp();
+        if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() TwitterStreamFactory().shutdown()");
         twitterStream.shutdown();
         twitterStream = null;
       }
