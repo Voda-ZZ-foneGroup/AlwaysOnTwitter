@@ -73,12 +73,11 @@
     -->
     <setup/>
 
-<!--
-           excludes="org/timur/glticker/TickerServiceAbstract*.*">
--->
     <target name="-post-compile">
       <jar destfile="bin/twitterservice.jar" 
-           basedir="bin/classes">
+           basedir="bin/classes"
+           excludes="com/vodafone/twitter/client/*.*"
+      >
         <manifest>
           <attribute name="Implementation-Title" value="twitterservice.jar"/>
           <attribute name="Implementation-Version" value="1.0.0"/>
