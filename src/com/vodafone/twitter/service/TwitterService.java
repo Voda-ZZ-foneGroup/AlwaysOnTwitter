@@ -904,7 +904,7 @@ public class TwitterService extends TwitterServiceAbstract {
 
                 // todo: ???
                 connectStream();
-                // todo: it won't be enough to start a new conectStream() ???
+                // todo: it won't be enough to start a new connectStream() ???
                 break;
 
               case 420: // The number of requests you have made exceeds the quota afforded by your assigned rate limit
@@ -1004,10 +1004,10 @@ public class TwitterService extends TwitterServiceAbstract {
 
         try {
           if(Config.LOGD) Log.i(LOGTAG, "ConnectThread connectStream() twitterStream.getUserStream() ...");
-        //userStream = twitterStream.getUserStream(); // simply doesn't work
+          //userStream = twitterStream.getUserStream(); // simply doesn't work
           twitterStream.user();
-      //} catch(TwitterException twitterException) {
-      //  Log.e(LOGTAG, "ConnectThread connectStream() TwitterException twitterException="+twitterException);
+          //} catch(TwitterException twitterException) {
+          //  Log.e(LOGTAG, "ConnectThread connectStream() TwitterException twitterException="+twitterException);
         } catch(java.lang.IllegalStateException illstaex) {
           Log.e(LOGTAG, "ConnectThread connectStream() IllegalStateException illstaex="+illstaex);
           errMsg = "IllegalStateException on .user()";
