@@ -473,6 +473,17 @@ public class TwitterService extends TwitterServiceAbstract {
       return;
     }
 
+    // 2011-05-18: twitter has changed the position of the pin in the HTML
+    int idxCode = pin.indexOf("<code>");
+    if(idxCode>0) {
+      pin = pin.substring(idxCode+6);
+      int idxCodeEnd = pin.indexOf("</code>");
+      if(idxCodeEnd>0) {
+        pin = pin.substring(0,idxCodeEnd);
+        if(Config.LOGD) Log.i(LOGTAG, String.format("twitterLogin pin fixed=%s",pin));
+      }
+    }
+
     accessToken = null;
     if(twitter!=null) {
       try {

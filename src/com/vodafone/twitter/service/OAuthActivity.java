@@ -86,7 +86,7 @@ public class OAuthActivity extends Activity {
       if(message.startsWith("oauth-pin=")) {
         pin = message.substring(10).trim();
         if(Config.LOGD) Log.i(LOGTAG+" MyWebChromeClient", "onJsAlert() mService.twitterLogin("+pin+")");
-        Toast.makeText(context, "Pin = "+pin+" ...", 200).show();
+        //Toast.makeText(context, "Pin = "+pin+" ...", 200).show();
         (new Thread() { public void run() {
           if(mService!=null)
             mService.twitterLogin(pin);
