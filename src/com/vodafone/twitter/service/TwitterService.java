@@ -100,6 +100,7 @@ public class TwitterService extends TwitterServiceAbstract {
   static boolean linkifyMessages = false;
   //static UserStream userStream = null;
   private String messageLink = null;
+  //private String twitterConsumerKey, twitterConsumerSecret;
 
   @Override 
   public void onCreate() {
@@ -197,6 +198,8 @@ public class TwitterService extends TwitterServiceAbstract {
     // store consumer key + secret in system properties for twitter4j to use
     System.setProperty("twitter4j.oauth.consumerKey", intent.getStringExtra("consumerKey"));
     System.setProperty("twitter4j.oauth.consumerSecret", intent.getStringExtra("consumerSecret"));
+    //twitterConsumerKey=intent.getStringExtra("consumerKey");
+    //twitterConsumerSecret=intent.getStringExtra("consumerSecret");
 
     linkifyMessages = false;
     String linkifySwitch = intent.getStringExtra("linkify");
@@ -810,8 +813,8 @@ public class TwitterService extends TwitterServiceAbstract {
         }
 
         // startActivity OAuthActivity:  open oauthAuthorizationURL in an embedded browser and let the user login
-        if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() twitter.getOAuthRequestToken()....");
         try {
+          if(Config.LOGD) Log.i(LOGTAG, "ConnectThread run() twitter.getOAuthRequestToken() ...");
           requestToken = twitter.getOAuthRequestToken();
           if(requestToken!=null) {
             String oauthLoginActivityName = "com.vodafone.twitter.service.OAuthActivity";
@@ -912,7 +915,7 @@ public class TwitterService extends TwitterServiceAbstract {
 
                 // todo: ???
                 connectStream();
-                // todo: it won't be enough to start a new conectStream() ???
+                // todo: it won't be enough to start a new connectStream() ???
                 break;
 
               case 420: // The number of requests you have made exceeds the quota afforded by your assigned rate limit
@@ -1012,10 +1015,10 @@ public class TwitterService extends TwitterServiceAbstract {
 
         try {
           if(Config.LOGD) Log.i(LOGTAG, "ConnectThread connectStream() twitterStream.getUserStream() ...");
-        //userStream = twitterStream.getUserStream(); // simply doesn't work
+          //userStream = twitterStream.getUserStream(); // simply doesn't work
           twitterStream.user();
-      //} catch(TwitterException twitterException) {
-      //  Log.e(LOGTAG, "ConnectThread connectStream() TwitterException twitterException="+twitterException);
+          //} catch(TwitterException twitterException) {
+          //  Log.e(LOGTAG, "ConnectThread connectStream() TwitterException twitterException="+twitterException);
         } catch(java.lang.IllegalStateException illstaex) {
           Log.e(LOGTAG, "ConnectThread connectStream() IllegalStateException illstaex="+illstaex);
           errMsg = "IllegalStateException on .user()";
