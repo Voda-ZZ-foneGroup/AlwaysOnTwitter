@@ -198,6 +198,7 @@ public class TwitterService extends TwitterServiceAbstract {
     // store consumer key + secret in system properties for twitter4j to use
     System.setProperty("twitter4j.oauth.consumerKey", intent.getStringExtra("consumerKey"));
     System.setProperty("twitter4j.oauth.consumerSecret", intent.getStringExtra("consumerSecret"));
+    System.setProperty("streamBaseURL", "https://stream.twitter.com/");
     //twitterConsumerKey=intent.getStringExtra("consumerKey");
     //twitterConsumerSecret=intent.getStringExtra("consumerSecret");
 
